@@ -5,6 +5,18 @@
 #SingleInstance Force
 Persistent
 A_IconTip := "Threads URL cleaner"
+
+; Log start / exit reason / errors next to the script, so a silent
+; disappearance (e.g. not running after a logon) can be diagnosed.
+; Errors are logged instead of shown, so a dialog never blocks the script.
+Log(msg) {
+    try FileAppend(FormatTime(, "yyyy-MM-dd HH:mm:ss") " " msg "`n",
+        A_ScriptDir "\threads-url-clean.log", "UTF-8")
+}
+Log("start pid=" DllCall("GetCurrentProcessId"))
+OnExit((reason, code) => Log("exit reason=" reason " code=" code))
+OnError((e, mode) => (Log("error: " e.Message " (line " e.Line ")"), true))
+
 OnClipboardChange(OnClip)
 
 OnClip(dataType) {

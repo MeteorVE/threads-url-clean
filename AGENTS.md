@@ -70,7 +70,7 @@ Success = three `OK` lines. What it does:
 |---|---|---|
 | Program | `%LOCALAPPDATA%\threads-url-clean\threads-url-clean.ahk` (AutoHotkey v2) | `~/Library/Application Support/threads-url-clean/threads-url-clean.js` (JXA, run by `/usr/bin/osascript`) |
 | Autostart | Shortcut in the Startup folder (`threads-url-clean.lnk`) | LaunchAgent `~/Library/LaunchAgents/io.github.meteorve.threads-url-clean.plist` (RunAtLoad + KeepAlive) |
-| Log | — | `~/Library/Logs/threads-url-clean.log` (stderr) |
+| Log | `%LOCALAPPDATA%\threads-url-clean\threads-url-clean.log` (start / exit reason / errors; last lines shown by `check.ps1` as `LOG=`) | `~/Library/Logs/threads-url-clean.log` (stderr) |
 
 ## Step 3 — verify
 
@@ -104,7 +104,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -File windows\uninstall.ps1
 bash macos/uninstall.sh
 ```
 
-This removes the program, the autostart entry and (macOS only) the log. It does not uninstall
+This removes the program, the autostart entry and the log. It does not uninstall
 AutoHotkey.
 
 ## Troubleshooting
@@ -113,6 +113,9 @@ AutoHotkey.
   `-ExecutionPolicy Bypass -File` as above; do not change the machine policy.
 - **Windows, nothing happens**: `check.ps1` → `RUNNING=no` means the script
   is not running; re-run `install.ps1`. AutoHotkey v1 cannot run it.
+  Read the `LOG=` lines first: no `start` line after the last logon means the
+  Startup shortcut never launched it; an `exit reason=...` line says why it
+  stopped; `error:` lines are runtime errors (logged instead of shown as dialogs).
 - **macOS, `RUNNING=no` after install**: read `~/Library/Logs/threads-url-clean.log`,
   and `launchctl print gui/$(id -u)/io.github.meteorve.threads-url-clean`.
 - **Short links not expanded**: needs network; there is a 3-second timeout,

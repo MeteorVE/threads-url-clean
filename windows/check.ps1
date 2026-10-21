@@ -21,6 +21,10 @@ try {
 "AUTOSTART=$(if (Test-Path $StartupLnk) { 'yes' } else { 'no' })"
 "RUNNING=$(if ($procs.Count) { 'yes (' + ($procs.ProcessId -join ',') + ')' } else { 'no' })"
 "NETWORK_THREADS=$net"
+$logFile = Join-Path $InstallDir 'threads-url-clean.log'
+if (Test-Path $logFile) {
+    Get-Content $logFile -Tail 5 | ForEach-Object { "LOG=$_" }
+}
 if (-not $ahk) {
     "HINT=AutoHotkey v2 is required. Install with: winget install --id AutoHotkey.AutoHotkey -e"
 }

@@ -117,6 +117,19 @@ polls=12 passes=1 writes=1
 | 執行者 | AutoHotkey v2（需要安裝） | `/usr/bin/osascript -l JavaScript`（系統內建，JXA） |
 | 自動啟動 | 「啟動」資料夾裡的捷徑 | `~/Library/LaunchAgents` 裡的 plist（`RunAtLoad` + `KeepAlive`，掛掉會自動重啟） |
 | 安裝位置 | `%LOCALAPPDATA%\threads-url-clean\` | `~/Library/Application Support/threads-url-clean/` |
+| Log | 安裝資料夾裡的 `threads-url-clean.log`：啟動、結束原因、錯誤 | `~/Library/Logs/threads-url-clean.log`：stderr |
+
+### Windows 為什麼要寫 log
+
+2026-10-21 有一次重新登入後，`switch-input.ahk` 有被開機啟動，清理程式卻沒有在跑。
+開機捷徑、安裝檔、「啟動應用程式」清單都正常，手動執行捷徑也能正常常駐，事件檢視器裡也沒有 AutoHotkey 當掉的紀錄，
+所以無法分辨是登入時根本沒被執行，還是執行後自己結束了。
+
+現在腳本會在安裝資料夾寫 log，`check.ps1` 會把最後幾行列成 `LOG=`：
+
+- 沒有 `start`：開機捷徑根本沒有執行它。
+- 有 `exit reason=...`：AutoHotkey 回報的結束原因，例如 `Logoff`、`Shutdown`、`Single`（被同一支腳本的新實例取代）。
+- 有 `error: ...`：執行時期的錯誤。現在只寫 log、不跳對話框（`OnError` 回傳 true），避免使用者不小心按掉而讓程式結束。
 
 安裝腳本會把程式複製出 repo，所以裝完可以把 clone 刪掉。
 
