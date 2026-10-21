@@ -9,7 +9,7 @@
 
 `threads.com/share/xxxx/` 這種短連結也會自動展開成乾淨的貼文網址。
 
-支援 **Windows 10/11** 和 **macOS**。
+主要平台是 **Windows 10/11**，**macOS** 也能用（差異見下方「運作原理」）。
 
 ## 為什麼要拿掉 xmt
 
@@ -63,7 +63,7 @@ bash macos/install.sh    # 安裝 + 登入時自動啟動
 bash macos/selftest.sh   # 驗證（會暫時改動剪貼簿）
 ```
 
-Mac 版在背景安靜執行，沒有圖示也沒有提示。
+Mac 版在背景安靜執行，沒有圖示也沒有提示。複製後最多要等 0.5 秒才會清理完成（原因見下方）。
 
 ## 移除
 
@@ -91,6 +91,9 @@ bash macos/uninstall.sh
 2. 如果是 `/share/xxx/` 短連結 → 送出一個不跟隨轉址的請求，從 302 回應的 `Location` 拿到真正的網址（3 秒逾時，失敗就保持原樣）
 3. 只拿掉 Threads 網址上的 `xmt`、`slof` 參數，其他參數和非 Threads 的網址都不動
 4. 結果跟原本不一樣才寫回剪貼簿（所以不會因為自己寫入又觸發而無限循環）
+
+為什麼 Mac 只能輪詢、每次複製會處理幾次、測試紀錄和參考資料，都寫在
+[docs/how-it-works.md](docs/how-it-works.md)。
 
 ## 隱私
 
